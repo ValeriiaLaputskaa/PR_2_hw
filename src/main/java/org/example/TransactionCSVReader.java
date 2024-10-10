@@ -16,9 +16,10 @@ public abstract class TransactionCSVReader {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] values = line.split(",");
-                    String category = values.length > 3 ? values[3] : "Без категорії"; // Значення за замовчуванням
 
                     if (values.length >= 3) {
+                        // Виклик методу для визначення категорії на основі опису
+                        String category = categorizeTransaction(values[2]);
                         Transaction transaction = new Transaction(values[0], Double.parseDouble(values[1]), values[2], category);
                         transactions.add(transaction);
                     } else {
@@ -30,5 +31,32 @@ public abstract class TransactionCSVReader {
             e.printStackTrace();
         }
         return transactions;
+    }
+
+    // Метод для визначення категорії на основі опису
+    private static String categorizeTransaction(String description) {
+        description = description.toLowerCase();  // Приведення до нижнього регістру для спрощення порівняння
+
+        if (description.contains("сільпо") || description.contains("Магазин")) {
+            return "Магазин";
+        } else if (description.contains("ресторан") || description.contains("кафе") || description.contains("кав'ярня")) {
+            return "Кафе/Ресторан";
+        } else if (description.contains("аптека")) {
+            return "Аптека";
+        } else if (description.contains("бензин") || description.contains("заправка")) {
+            return "Заправка";
+        } else if (description.contains("кінотеатр")) {
+            return "Розваги";
+        } else if (description.contains("подарунки") || description.contains("новорічні прикраси")) {
+            return "Подарунки/Шопінг";
+        } else if (description.contains("зарплата") || description.contains("фріланс") || description.contains("авторські")) {
+            return "Дохід";
+        } else if (description.contains("комунальні послуги")) {
+            return "Комунальні платежі";
+        } else if (description.contains("інші витрати")) {
+            return "Інше";
+        } else {
+            return "Без категорії";  // Категорія за замовчуванням
+        }
     }
 }

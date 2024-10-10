@@ -43,7 +43,6 @@ public abstract class TransactionReportGenerator {
             } else {
                 monthMap.put(monthYear, monthMap.get(monthYear) + transaction.getAmount());
             }
-
         }
 
         System.out.println("Звіт про витрати по категоріях та місяцях:");
@@ -53,7 +52,9 @@ public abstract class TransactionReportGenerator {
             for (Map.Entry<String, Double> monthEntry : entry.getValue().entrySet()) {
                 String monthYear = monthEntry.getKey();
                 double totalAmount = monthEntry.getValue();
-                int starsCount = (int) (totalAmount / 1000); // Кількість символів * на кожні 1000 грн
+
+                // Додаємо перевірку, щоб уникнути негативного значення
+                int starsCount = (int) Math.max(totalAmount / 1000, 0); // Перевірка, щоб значення не було негативним
 
                 System.out.printf("  %s: %.2f грн %s%n", monthYear, totalAmount, "*".repeat(starsCount));
             }
